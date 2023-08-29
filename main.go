@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -79,7 +78,7 @@ func decryptFolder(folder string, password string) error {
 }
 
 func encryptFile(filename string, password string) error {
-	plaintext, err := ioutil.ReadFile(filename)
+	plaintext, err := os.ReadFile(filename)
 	if err != nil {
 		return err
 	}
@@ -139,13 +138,13 @@ func encryptFile(filename string, password string) error {
 }
 
 func decryptFile(filename string, password string) error {
-	ciphertext, err := ioutil.ReadFile(filename)
+	ciphertext, err := os.ReadFile(filename)
 	if err != nil {
 		return err
 	}
 
 	if len(ciphertext) < saltSize+nonceSize {
-		return errors.New("File doesn't seem to be encrypted")
+		return errors.New("file doesn't seem to be encrypted")
 	}
 
 	// Extract the salt, nonce, and ciphertext from the input file
