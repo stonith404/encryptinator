@@ -13,7 +13,7 @@ import (
 	"path/filepath"
 
 	"golang.org/x/crypto/argon2"
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 )
 
 const (
@@ -208,11 +208,17 @@ func main() {
 	filename := os.Args[2]
 
 	fmt.Print("Enter password: ")
-	password, _ := terminal.ReadPassword(int(os.Stdin.Fd()))
+	password, _ := term.ReadPassword(int(os.Stdin.Fd()))
 	fmt.Println()
 
 	switch action {
 	case "encrypt", "e":
+		fmt.Print("Re-enter password: ")
+		reenteredPassword, _ := term.ReadPassword(int(os.Stdin.Fd()))
+		fmt.Println()
+		if string(password) != string(reenteredPassword) {
+			log.Fatal("Passwords don't match")
+		}
 		err := encrypt(filename, string(password))
 		if err != nil {
 			log.Fatalf("Failed to encrypt file: %v\n", err)
